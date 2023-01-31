@@ -22,6 +22,7 @@
 		<!-- icons -->
 		<link rel="shortcut icon" href="./img/crest_LA.png">
 		<link rel="apple-touch-icon-precomposed" href="./img/logo.jpg">
+		<link rel="shortcut icon" href="./img/arrowkeys.png">
 		<link rel="manifest" href="./manifest.webmanifest">
 
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -150,18 +151,18 @@
 		<table>
 			<thead>
 			<th></th>
-			<th><button id="forwardBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="forward()">Move Forward</button></th>
+			<th><img class="rounded" src="img/upArrowKey.png" alt="Logo" style="width: 90px; height: 70px;" onclick="forward()"/></th>
 			<th></th>
 			</thead>
 			<tbody>
 			<tr>
-			<td><button id="leftBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="left()">Move Left</button></td>
-			<td><button id="stopBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="stopRover()">Stop</button></td>
-			<td><button id="rightBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="right()">Move Right</button></td>
+			<th><img class="rounded" src="img/leftArrowKey.png" alt="Logo" style="width: 90px; height: 70px;" onclick="left()"/></th>
+			<th><img class="rounded center-fit" src="img/stopButton.png" alt="Logo" style="width: 70px; height: 70px;" onclick="stopRover()"/></th>
+			<th><img class="rounded" src="img/rightArrowKey.png" alt="Logo" style="width: 90px; height: 70px;" onclick="right()"/></th>
 			</tr>
 			<tr>
 			<td></td>
-			<td><button id="backwardBtn" class=" btn-dark custom-btn btn-sm mx-auto rounded" type="button" onclick="backward()">Move backward</button></td>
+			<th><img class="rounded" src="img/downArrowKey.png" alt="Logo" style="width: 90px; height: 70px;" onclick="backward()"/></th>
 			</tr>
 			</tbody>
 			</table>
