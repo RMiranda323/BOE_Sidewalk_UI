@@ -196,47 +196,66 @@
 		</div>
 		-->
 	</div>
+	<div class="row">
+		<div class="col-4 md-2 d-none d-md-block">
+			<table style="margin: 0 auto;">
+				<thead>
+				<th></th>
+				<th>
+					<button class="controlButton"> 
+						<img class="rounded" src="img/upArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="forward()"/>
+					</button>
+				</th>
+				<th></th>
+				</thead>
+				<tbody>
+				<tr>
+				<th>
+					<button class="controlButton">
+						<img class="rounded" src="img/leftArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="left()"/>
+					</button>
+				</th>
+				<th>
+					<button class="controlButton"> 
+						<img class="rounded center-fit" src="img/stopButton.png" alt="Logo" style="width: 70px; height: 70px;" onclick="stopRover()"/>
+					</button> 
+				</th>
+				<th>
+					<button class="controlButton"> 
+						<img class="rounded" src="img/rightArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="right()"/>
+					</button>
+				</th>
+				</tr>
+				<tr>
+				<td></td>
+				<th>
+					<button class="controlButton"> 
+						<img class="rounded" src="img/downArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="backward()"/>
+					</button>
+				</th>
+						
+				</tr>
+				</tbody>
+			</table>
+		</div>
 
-	<div class="col md-2 d-none d-md-block">
-		<table>
-			<thead>
-			<th></th>
-			<th>
-				<button class="controlButton"> 
-					<img class="rounded" src="img/upArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="forward()"/>
-				</button>
-			</th>
-			<th></th>
-			</thead>
-			<tbody>
-			<tr>
-			<th>
-				<button class="controlButton">
-					<img class="rounded" src="img/leftArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="left()"/>
-				</button>
-			</th>
-			<th>
-				<button class="controlButton"> 
-					<img class="rounded center-fit" src="img/stopButton.png" alt="Logo" style="width: 70px; height: 70px;" onclick="stopRover()"/>
-				</button> 
-			</th>
-			<th>
-				<button class="controlButton"> 
-					<img class="rounded" src="img/rightArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="right()"/>
-				</button>
-			</th>
-			</tr>
-			<tr>
-			<td></td>
-			<th>
-				<button class="controlButton"> 
-					<img class="rounded" src="img/downArrowKey.png" alt="Logo" style="width: 70px; height: 70px;" onclick="backward()"/>
-				</button>
-			</th>
-					
-			</tr>
-			</tbody>
-		</table>
+		<div class="col md-2 d-none d-md-block" style="text-align: center;">
+			<!--Speed Controls-->
+			<label for="speed-select" style="font-size: xx-large;">Speed:</label>
+			<select name="speeds" id="speed-select" style="height: 50px; font-size: x-large;">
+				<option value=".1">.1 m/s</option>
+				<option value=".2">.2 m/s</option>
+				<option value=".3">.3 m/s</option>
+				<option value=".4">.4 m/s</option>
+				<option value=".5">.5 m/s</option>
+			</select>
+		</div>
+
+		<div class="col-4 md-2 d-none d-md-block">
+			<!-- Joystick Controls-->
+			<div id="joystick"></div>
+		</div>
+
 	</div>
 
 	<!-- FOR VIDEO -->
