@@ -5,8 +5,15 @@
 
 .custom-btn {
     height: 50px;
+    width: 50px;
     border-radius: 0.5em;
 }
+
+.custom-btn-SSD {
+  height: 50px;
+  border-radius: 0.5em;
+}
+
 
 .marg-right{
     float: right;
@@ -88,6 +95,7 @@ body {
   border: 1px solid #5090D3;
   background-color: #0A1929;
   border-radius: 0.5em;
+  color: white;
 }
 
 /* need to add correct color change when hovering over full screen button */
