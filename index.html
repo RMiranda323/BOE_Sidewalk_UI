@@ -58,19 +58,11 @@
 				<h1><img src="img/battery.png" alt="batteryID" style="width: 50px; height: 50px;"/> 59%</h1>
 				
 			</div>
-			<div class="col-1 text-center">
+			<div class="col-3 text-center">
 				<button id='fullScreenButton' style="width: 45px; height: 45px;" type="button" onclick="fullScreen()">
 					<img class="rounded img-fluid" src="img/nav-bar-fullscreen.svg" alt="FullScreen" style="width: 25px; height: 25px;"/>
 				</button>
 			</div>
-			<ul class="navbar-nav ml-auto">
-			<li class="nav-item ml-auto">
-				<button type="button" id="startButton" class="btn btn-primary btn-sm custom-btn mt-2 ml-3" onclick="setStart()">Start</button>
-			</li>
-			<li class="nav-item ml-auto">
-				<button type="button" id="stopButton" class="btn btn-primary btn-sm custom-btn mt-2 ml-3" onclick="setStop()">Stop</button>
-			</li>
-			</ul>
 
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 				<span class="navbar-toggler-icon"></span>
@@ -79,19 +71,29 @@
 			<div class="col-5 collapse navbar-collapse ml-auto" id="collapsibleNavbar">
 				<ul class="navbar-nav ml-auto">
 				<li class="nav-item ml-auto">
+					<button type="button" style="width: 50px; height: 50px;" id="startButton" class="btn btn-success btn-sm custom-btn mt-2 ml-3" onclick="setStart()"><i class="bi bi-play-fill"></i></button>
+				</li>
+				<li class="nav-item ml-auto">
+					<button type="button" style="width: 50px; height: 50px;" id="stopButton" class="btn btn-info btn-sm custom-btn mt-2 ml-3" onclick="setStop()"><i class="bi bi-stop-circle"></i></button>
+				</li>
+				<li class="nav-item ml-auto">
 					<input type="text" class="btn btn-primary btn-sm custom-btn mt-2 ml-3" id = "sid" placeholder="Sidewalk ID" >
 				</li>
 				<li class="nav-item ml-auto">
 					<button type="button" class="btn btn-primary btn-sm custom-btn mt-2 ml-3"  onclick="setSID()">Set SID</button>
 				</li>
 				<li class="nav-item ml-auto">
-					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="systemReboot()">Reboot</button>
+					<button type="button" style="width: 50px; height: 50px;" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="systemReboot()"
+						data-bs-toggle="tooltip" data-bs-placement="bottom"
+						data-bs-title="System Reboot">
+						<i class="bi bi-arrow-clockwise"></i>
+					</button>
 				</li>
 				<!-- <li class="nav-item ml-auto">
 					<button type="button" class="btn btn-warning btn-sm custom-btn mt-2 ml-3" onclick="streamReboot()">Reboot stream</button>
 				</li> -->
 				<li class="nav-item ml-auto">
-					<button type="button" class="btn btn-danger btn-sm custom-btn mt-2 ml-3"  onclick="turnOff()">Turn off</button>
+					<button type="button" style="width: 50px; height: 50px;" class="btn btn-danger btn-sm custom-btn mt-2 ml-3"  onclick="turnOff()"><i class="bi bi-power"></i></button>
 				</li>
 				</ul>
 			</div>
