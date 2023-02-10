@@ -165,7 +165,7 @@ function createJoystick() {
         position: { left: 65 + '%', top: 50 + '%' },
         mode: 'static',
         size: 200,
-        color: '#00ff00',
+        color: '#808080',
         restJoystick: true
     });
 
