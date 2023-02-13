@@ -274,7 +274,7 @@ function publishStart(){
 function setStart(){
     startVal = 99;
 
-    // diable the start button after it's clicked
+    // disable the start button after it's clicked
     $("#startButton").on("click", function() {
         $(this).prop("disabled", true);
         stopButton = document.getElementById("stopButton")
@@ -343,6 +343,13 @@ function right(){
 function stopRover(){
     twist.linear.x = 0
     twist.angular.z = 0
+}
+
+//setSpeed function gets value from select and sets max_linear_speed
+function setSpeed(){
+    var selectedSpeed = document.getElementById("speedSelect").value;
+    max_linear_speed = selectedSpeed;
+    console.log(max_linear_speed);
 }
 
 // *** NEEDS WORK ***
@@ -436,6 +443,8 @@ window.onload = function () {
 
     // video = document.getElementById('video');
     // video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
+
+    setSpeed();
     
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
 
