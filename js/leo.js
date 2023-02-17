@@ -164,8 +164,8 @@ function createJoystick() {
         zone: joystickContainer,
         position: { left: 65 + '%', top: 50 + '%' },
         mode: 'static',
-        size: 300,
-        color: '#ffffff',
+        size: 200,
+        color: '#808080',
         restJoystick: true
     });
 
