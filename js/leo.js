@@ -3,11 +3,7 @@ var manager;
 var ros;
 var batterySub;
 var cmdVelPub;
-var servo1Pub, servo2Pub, servo3Pub;
-var servo1Val, servo2Val, servo3Val;
-var servo1Last = 0, servo2Last = 0, servo3Last = 0;
 var twistIntervalID;
-var servoIntervalID;
 var robot_hostname;
 var batterySub;
 var startPub;
@@ -17,8 +13,25 @@ var sidPub;
 var sidVal;
 var sidIntervalID;
 
+var systemRebootPub;
+var systemShutdownPub;
+
+// var rebootData  = 0;
+// var shutdownData = 0;
+// var rebootIntervalID;
+// var shutdownIntervalID;
+
+var raw_dataSub;
+var raw_data_header = " latitude  longitude  x-slope  y-slope  x-temperature y-temperature GPS-msg \r\n";
+var raw_data = raw_data_header;
+var lineNo = 0;
+var maxLine = 20;
+
 var max_linear_speed = 0.5;
 var max_angular_speed = 1.2;
+
+var linear_speed = 0.1;
+var angular_speed = 0.6;
 
 function initROS() {
 
@@ -49,34 +62,6 @@ function initROS() {
 
     cmdVelPub.advertise();
 
-    // servo1Pub = new ROSLIB.Topic({
-    //     ros: ros,
-    //     name: '/servo1/angle',
-    //     messageType: 'std_msgs/Int16',
-    //     latch: true,
-    //     queue_size: 5
-    // });
-
-    // servo2Pub = new ROSLIB.Topic({
-    //     ros: ros,
-    //     name: '/servo2/angle',
-    //     messageType: 'std_msgs/Int16',
-    //     latch: true,
-    //     queue_size: 5
-    // });
-
-    // servo3Pub = new ROSLIB.Topic({
-    //     ros: ros,
-    //     name: '/servo3/angle',
-    //     messageType: 'std_msgs/Int16',
-    //     latch: true,
-    //     queue_size: 5
-    // });
-
-    // servo1Pub.advertise();
-    // servo2Pub.advertise();
-    // servo3Pub.advertise();
-
     systemRebootPub = new ROSLIB.Topic({
         ros: ros,
         name: '/system/reboot',
@@ -99,13 +84,20 @@ function initROS() {
     });
     batterySub.subscribe(batteryCallback);
 
+    raw_dataSub = new ROSLIB.Topic({
+        ros : ros,
+        name : '/rover_data',
+        messageType : 'std_msgs/String',
+        queue_length: 1
+    });
+    raw_dataSub.subscribe(rawDataCallback);
+
     startPub = new ROSLIB.Topic({
         ros: ros,
         name: '/start_val',
         messageType: 'std_msgs/Int16',
         queue_size: 10
     });
-   
     startPub.advertise();
 
     sidPub = new ROSLIB.Topic({
@@ -114,47 +106,9 @@ function initROS() {
         messageType: 'std_msgs/String',
         queue_size: 10
     });
-   
     sidPub.advertise();
 
 }
-
-  
-// function initSliders() {
-
-//     $('#s1-slider').slider({
-//         tooltip: 'show',
-//         min: -90,
-//         max: 90,
-//         step: 1,
-//         value: 0
-//     });
-//     $('#s1-slider').on("slide", function(slideEvt) {
-//         servo1Val = slideEvt.value;
-//     });
-
-//     $('#s2-slider').slider({
-//         tooltip: 'show',
-//         min: -90,
-//         max: 90,
-//         step: 1,
-//         value: 0
-//     });
-//     $('#s2-slider').on("slide", function(slideEvt) {
-//         servo2Val = slideEvt.value;
-//     });
-
-//     $('#s3-slider').slider({
-//         tooltip: 'show',
-//         min: -90,
-//         max: 90,
-//         step: 1,
-//         value: 0
-//     });
-//     $('#s3-slider').on("slide", function(slideEvt) {
-//         servo3Val = slideEvt.value;
-//     });
-// }
 
 function createJoystick() {
 
@@ -215,44 +169,32 @@ function initTeleopKeyboard() {
 }
 
 function batteryCallback(message) {
-    document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.voltage.toPrecision(4) + 'V';
+    var vol = (message.voltage.toPrecision(4)/24)*100;
+    if (vol > 100.0){
+        vol = 100.0
+    }
+    // document.getElementById('batteryID').innerHTML = 'Voltage: ' + message.voltage.toPrecision(4) + 'V';
+    document.getElementById('batteryID').innerHTML = 'Voltage: ' + vol.toFixed(2) + '% V';
+}
+
+function rawDataCallback(message) {
+    if(lineNo < maxLine){
+        raw_data += message.data + "\r\n";
+        lineNo++ ;
+    } else {
+        raw_data = raw_data_header + message.data + "\r\n";
+        lineNo = 1;
+    }
+    
+    document.getElementById('rawdata').value = raw_data;
 }
 
 function publishTwist() {
     cmdVelPub.publish(twist);
 }
 
-// function publishServos() {
-//     var servoMsg;
-
-//     if (servo1Val != servo1Last) {
-//         servo1Last = servo1Val;
-//         servoMsg = new ROSLIB.Message({
-//             data: servo1Val
-//         });
-//         servo1Pub.publish(servoMsg);
-//     }
-
-//     if (servo2Val != servo2Last) {
-//         servo2Last = servo2Val;
-//         servoMsg = new ROSLIB.Message({
-//             data: servo2Val
-//         });
-//         servo2Pub.publish(servoMsg);
-//     }
-
-//     if (servo3Val != servo3Last) {
-//         servo3Last = servo3Val;
-//         servoMsg = new ROSLIB.Message({
-//             data: servo3Val
-//         });
-//         servo3Pub.publish(servoMsg);
-//     }
-
-// }
-
 function systemReboot(){
-    systemRebootPub.publish(1)
+    systemRebootPub.publish()
     alertMessage = "Rebooting system"
     displayAlert(alertMessage)
 }
@@ -271,15 +213,29 @@ function publishStart(){
     startPub.publish(startMsg)
 }
 
-function setStart(){
-    startVal = 99;
+function checkSID() {
+    if(sidVal != undefined) {
+        return true
+    }
+    else{
+        return false
+    }
+}
 
-    // diable the start button after it's clicked
-    $("#startButton").on("click", function() {
-        $(this).prop("disabled", true);
-        stopButton = document.getElementById("stopButton")
-        $(stopButton).prop("disabled", false);
-    });
+function setStart(){
+    
+    if(checkSID()){
+        alertMessage = "Started collecting data on SID: " + sidVal + "."
+        startVal = 99;
+        $(this).prop("disabled",true);
+        $(stopButton).prop("disabled",false)
+             
+    }
+    else {
+        alertMessage = "Please set SID."
+    }
+    displayAlert(alertMessage)
+
 }
 
 function setStop(){
@@ -319,25 +275,29 @@ function setSID(){
     displayAlert(alertMessage)
 }
 
+function setSpeed(){
+    linear_speed = parseFloat(document.getElementById("speed-select").value);
+}
+
 function forward(){
-    twist.linear.x = max_linear_speed
+    twist.linear.x = linear_speed;
     twist.angular.z = 0
 
 }
 
 function backward(){
-    twist.linear.x = - max_linear_speed
+    twist.linear.x = - linear_speed
     twist.angular.z = 0
 }
 
 function left(){
     twist.linear.x = 0
-    twist.angular.z = max_angular_speed
+    twist.angular.z = linear_speed*1.5
 }
 
 function right(){
     twist.linear.x = 0
-    twist.angular.z = - max_angular_speed
+    twist.angular.z = - linear_speed*1.5
 }
 
 function stopRover(){
@@ -348,14 +308,7 @@ function stopRover(){
 // *** NEEDS WORK ***
 // function to check if the SID is set.
     //  this needs some work because it's not checking if it's null
-function checkSID() {
-    if(sidVal.length > 1) {
-        return true
-    }
-    else{
-        return false
-    }
-}
+
 
 // Function creates and displays a bootstrap alert message for the user. Autofades out after 2.5 seconds
 function displayAlert(alertText) {
@@ -392,10 +345,7 @@ function displayAlert(alertText) {
             $(this).remove(); 
         });
     }, 2500);
-    
-
 }
-
 
 window.onblur = function(){  
     twist.linear.x = 0;
@@ -405,16 +355,11 @@ window.onblur = function(){
 
 function shutdown() {
     clearInterval(twistIntervalID);
-    // clearInterval(servoIntervalID);
-    // clearInterval(startIntervalID);
-    // clearInterval(sidIntervalID);
     cmdVelPub.unadvertise();
-    // servo1Pub.unadvertise();
-    // servo2Pub.unadvertise();
-    // servo3Pub.unadvertise();
     systemRebootPub.unadvertise();
     systemShutdownPub.unadvertise();
     batterySub.unsubscribe();
+    raw_dataSub.unsubscribe();
     startPub.unadvertise();
     sidPub.unadvertise();
     ros.close();
@@ -430,22 +375,14 @@ window.onload = function () {
     robot_hostname = location.hostname;
 
     initROS();
-    // initSliders();
-    // initTeleopKeyboard();
     createJoystick();
 
     // video = document.getElementById('video');
     // video.src = "http://" + robot_hostname + ":8080/stream?topic=/camera/image_raw&type=ros_compressed";
     
     twistIntervalID = setInterval(() => publishTwist(), 100); // 10 hz
-
-    // servoIntervalID = setInterval(() => publishServos(), 100); // 10 hz
-
     startIntervalID = setInterval(() => publishStart(), 1000); // 1 hz
-    
     sidIntervalID = setInterval(() => publishSID(), 1000); // 1 hz
 
     window.addEventListener("beforeunload", () => shutdown());
 }
-
-
